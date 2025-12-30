@@ -2,6 +2,8 @@ import pandas as pd
 import os
 import config
 
+#関節角度の特徴量と加速度の特徴量を結合するスクリプト
+
 # ファイルパスの設定 
 data1_path = config.data1_path
 data2_path = config.data2_path
