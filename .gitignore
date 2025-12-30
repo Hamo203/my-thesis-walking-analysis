@@ -1,0 +1,11 @@
+vscode/__pycache__
+vscode/AIST_GaitDB2019
+vscode/c3d
+vscode/img
+vscode/don't_use_afteropensim
+vscode/.venv
+vscode/project
+vscode/aist_dataset_classes.csv
+vscode/config.py
+vscode/cal_c3d.py
+vscode/based_search.py
