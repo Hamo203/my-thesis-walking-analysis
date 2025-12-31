@@ -23,7 +23,12 @@ param_grid = {
 }
 
 # 4. StratifiedGroupKFold による交差検証
-sgkf = StratifiedGroupKFold(n_splits=5)
+sgkf = StratifiedGroupKFold(
+    n_splits=5,
+    shuffle=True,
+    random_state=42
+)
+
 grid_search = GridSearchCV(
     pipe,
     param_grid,
@@ -35,10 +40,24 @@ grid_search = GridSearchCV(
 print("最適パラメータを探索中...")
 grid_search.fit(X, y, groups=groups)
 # 5. 最適なモデルでホールドアウト評価
-best_model = grid_search.best_estimator_
+# best_estimator_は、最適なパラメータセットを持つモデルのオブジェクトを返します
+# best_model = grid_search.best_estimator_
+
+# best_parameters_は、最適なパラメータセットを辞書形式で返します
+best_params = grid_search.best_params_
 print(f"Best Parameters: {grid_search.best_params_}")
 print(f"Best CV ROC-AUC: {grid_search.best_score_:.4f}")
 
+# 最適パラメータで新たにモデルを構築
+best_model = Pipeline([
+    ('scaler', StandardScaler()),
+    ('svc', SVC(
+        C=best_params['svc__C'],
+        probability=True,
+        gamma=best_params['svc__gamma'],
+        class_weight='balanced',
+        random_state=42))
+])
 
 cv_thresholds = []
 cv_aucs, cv_recalls, cv_f1s = [], [], []
@@ -49,7 +68,9 @@ for fold, (train_idx, val_idx) in enumerate(sgkf.split(X, y, groups), 1):
 
     best_model.fit(X_train_cv, y_train_cv)
     y_prob_val = best_model.predict_proba(X_val_cv)[:, 1]
+    '''
     #しきい値をvalidationで決める
+    validation データを見て，Recall ≥ 0.8 になる threshold を決めて，その fold の Recall / F1 を出す
     fpr, tpr, thresholds = roc_curve(y_val_cv, y_prob_val)
     #例：Recall >= 0.8 を満たす最小 threshold
     idx = np.where(tpr >= 0.8)[0][0]
@@ -62,7 +83,9 @@ for fold, (train_idx, val_idx) in enumerate(sgkf.split(X, y, groups), 1):
     cv_aucs.append(roc_auc_score(y_val_cv, y_prob_val))
     cv_recalls.append(recall_score(y_val_cv, y_pred_val))
     cv_f1s.append(f1_score(y_val_cv, y_pred_val))
+    
     print(f"Fold {fold}: AUC={cv_aucs[-1]:.4f}, Recall={cv_recalls[-1]:.4f}, F1={cv_f1s[-1]:.4f}")
+    '''
 
 final_threshold = np.mean(cv_thresholds)
 # 5. 平均スコアの算出
