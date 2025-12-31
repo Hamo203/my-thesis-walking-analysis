@@ -1,7 +1,5 @@
 def model_predict_proba(X_input):
     return best_model.predict_proba(X_input)
-# background（基準分布）
-X_background = shap.sample(X, 20, random_state=42)
 
 # SHAP値を計算する対象（可視化用）
 X_explain = shap.sample(X, 50, random_state=0)
