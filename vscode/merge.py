@@ -5,16 +5,21 @@ import config
 #関節角度の特徴量と加速度の特徴量を結合するスクリプト
 
 # ファイルパスの設定 
-data1_path = config.data1_path
-data2_path = config.data2_path
+#df_accel_sacr_path = config.df_accel_sacr
+df_accel_sacr_path = config.df_accel_sacr_renamed
+df_accel_rank_path = config.df_accel_rank
+df_accel_rank2_path = config.df_accel_rank2
+df_knee_vgrf_QC_path = config.df_knee_vgrf_QC
 # 出力ファイルパスの設定 元のファイルと同じディレクトリ
-output_folder = os.path.dirname(data1_path)
-output_csv_path = os.path.join(output_folder, "merged_features_kinematics4.csv")
+output_folder = os.path.dirname(df_accel_sacr_path)
+output_csv_path = os.path.join(output_folder, "merged_features_kinematics6_all3summary.csv")
 
 #データの読み込み 
 try:
-    df_accel = pd.read_csv(data1_path)
-    df_kinema = pd.read_csv(data2_path)
+    df_accel_sacr = pd.read_csv(df_accel_sacr_path)
+    df_accel_rank = pd.read_csv(df_accel_rank_path)
+    df_accel_rank2 = pd.read_csv(df_accel_rank2_path)
+    df_kinema = pd.read_csv(df_knee_vgrf_QC_path)
     print(" data loaded successfully.")
 except FileNotFoundError as e:
     print(f" file not found: {e.filename}")
@@ -22,7 +27,7 @@ except FileNotFoundError as e:
     exit()
 
 
-#キー列の作成/修正 
+# 関節角度，vGRFQC後のファイル用 キー列の作成/修正 
 # Data 2の 'File' 列を、Data 1の 'file_name' と一致するように整形
 # '_markers.trc' を削除し、'.c3d' に置き換える
 df_kinema['file_name_key'] = (
@@ -31,6 +36,22 @@ df_kinema['file_name_key'] = (
 )
 
 # データの統合 
+# SACR + RANK
+df_accel = pd.merge(
+    df_accel_sacr,
+    df_accel_rank,
+    on=['file_name', 'step_index'],
+    how='left'
+)
+
+# + RANK2
+df_accel = pd.merge(
+    df_accel,
+    df_accel_rank2,
+    on=['file_name', 'step_index'],
+    how='left'
+)
+
 df_merged = pd.merge(
     df_accel,
     df_kinema.drop(columns=['File']), # 元の 'File' 列は削除
