@@ -38,7 +38,7 @@ def clean_ic_indices(ic_indices, min_interval=10):
     return cleaned
 
 # tsfreshを組み込んだ特徴量抽出関数
-def extract_all_features(acc, ic_indices, fs, file_name):
+def extract_all_features(acc, ic_indices, fs, file_name ,marker_name):
     
     # 1. タイムセグメントをtsfresh用のDataFrameに変換
     tsfresh_data_list = []
@@ -80,6 +80,7 @@ def extract_all_features(acc, ic_indices, fs, file_name):
             pd.concat([df_step_x, df_step_y, df_step_z, df_step_mag], ignore_index=True)
         )
         
+        suffix = f"_{marker_name.lower()}"
         #  元の基本的な特徴量の抽出+PSDベースの特徴量
         feat = {
             'file_name': file_name,
@@ -87,14 +88,14 @@ def extract_all_features(acc, ic_indices, fs, file_name):
             'frames': e - s,
             
             # これは残します（RMSはtsfreshにもあるが、簡潔性のために残す）
-            'rms_mag': np.sqrt(np.mean(mag ** 2)),
+            f'rms_mag{suffix}': np.sqrt(np.mean(mag ** 2)),
             
             # PSDベースの特徴量（これはtsfreshのデフォルト設定にはないので残す）
-            'total_power_mag': 0.0,
-            'peak_freq_mag': 0.0,
-            'median_freq_mag': 0.0,
+            f'total_power_mag{suffix}': 0.0,
+            f'peak_freq_mag{suffix}': 0.0,
+            f'median_freq_mag{suffix}': 0.0,
             # IC直後0.15秒間のピーク
-            'ic_peak': 0
+            f'ic_peak{suffix}': 0
         }
         
         # PSDベースの特徴量
@@ -102,22 +103,22 @@ def extract_all_features(acc, ic_indices, fs, file_name):
             # Welch法を用いて計算したパワースペクトル密度(PSD) の値に基づき算出された特徴量の計算
             freqs, Pxx = welch(mag, fs=fs, nperseg=len(mag), scaling='spectrum')
             total_power = trapz(Pxx, freqs)
-            feat['total_power_mag'] = total_power
+            feat[f'total_power_mag{suffix}'] = total_power
             peak_freq = freqs[np.argmax(Pxx)]
-            feat['peak_freq_mag'] = peak_freq
+            feat[f'peak_freq_mag{suffix}'] = peak_freq
             cumulative_power = np.cumsum(Pxx)
             median_freq_idx = np.searchsorted(cumulative_power, total_power / 2)
             median_freq = freqs[median_freq_idx] if median_freq_idx < len(freqs) else 0.0
-            feat['median_freq_mag'] = median_freq
+            feat[f'median_freq_mag{suffix}'] = median_freq
         except ValueError as e:
             print(f"[Warning] FFT failed for step {i} in {file_name}: {e}")
-            feat.update({'total_power_mag': 0.0, 'peak_freq_mag': 0.0, 'median_freq_mag': 0.0})
+            feat.update({f'total_power_mag{suffix}': 0.0, f'peak_freq_mag{suffix}': 0.0, f'median_freq_mag{suffix}': 0.0})
             
         # IC直後0.15秒間のピーク
         win = seg[:int(0.15 * fs)]
         win_mag = np.linalg.norm(win, axis=1)
-        feat['ic_peak'] = win_mag.max() if win_mag.size else 0
-        
+        feat[f'ic_peak{suffix}'] = win_mag.max() if win_mag.size else 0
+
         basic_feats.append(feat)
 
     if not tsfresh_data_list:
@@ -146,6 +147,12 @@ def extract_all_features(acc, ic_indices, fs, file_name):
     
     # tsfreshの結果のインデックス名を 'step_index' に変更（結合用）
     df_tsfresh_features = df_tsfresh_features.reset_index().rename(columns={'index': 'step_index'})
+    suffix = f"_{marker_name.lower()}"
+
+    exclude_cols = ['step_index']
+    df_tsfresh_features = df_tsfresh_features.rename(
+        columns=lambda c: c if c in exclude_cols else f"{c}{suffix}"
+    )
     
     # 基本特徴量とtsfresh特徴量の結合
     df_basic = pd.DataFrame(basic_feats)
@@ -166,7 +173,7 @@ def extract_all_features(acc, ic_indices, fs, file_name):
 if __name__ == '__main__':
     
     folder = config.folder_calc_all_tsfresh
-    output_csv = os.path.join(folder, "output_features_tsfresh2.csv") # 出力ファイル名を変更
+    output_csv = os.path.join(folder, "output_features_tsfresh2_ran2.csv") # 出力ファイル名を変更
 
     all_results = []
 
@@ -183,11 +190,11 @@ if __name__ == '__main__':
             print(f"[Error] Failed to read C3D file {file}: {e}")
             continue
 
-        marker_name = "SACR"
+        marker_name = "RAN2"
         marker_labels = c3d['parameters']['POINT']['LABELS']['value']
         if marker_name not in marker_labels:
             print(f"{marker_name} not found in {file}")
-            continue # SACRマーカーがないファイルはスキップ
+            continue # markerがないファイルはスキップ
         idx = marker_labels.index(marker_name)
 
         fs = float(c3d['parameters']['POINT']['RATE']['value'][0])
@@ -213,7 +220,7 @@ if __name__ == '__main__':
         print("IC indices (cleaned RHS):", ic_indices)
 
         # 新しい関数を呼び出す
-        df_feat = extract_all_features(acc_v3d, ic_indices, fs, file) 
+        df_feat = extract_all_features(acc_v3d, ic_indices, fs, file, marker_name) 
         if not df_feat.empty:
             all_results.append(df_feat)
 

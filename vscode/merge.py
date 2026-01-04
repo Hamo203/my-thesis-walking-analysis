@@ -12,7 +12,7 @@ df_accel_rank2_path = config.df_accel_rank2
 df_knee_vgrf_QC_path = config.df_knee_vgrf_QC
 # 出力ファイルパスの設定 元のファイルと同じディレクトリ
 output_folder = os.path.dirname(df_accel_sacr_path)
-output_csv_path = os.path.join(output_folder, "merged_features_kinematics6_all3summary.csv")
+output_csv_path = os.path.join(output_folder, "merged_features_kinematics7.csv")
 
 #データの読み込み 
 try:
