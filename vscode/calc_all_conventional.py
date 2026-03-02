@@ -6,7 +6,7 @@ from scipy.stats import skew, kurtosis
 from numpy import trapz
 import os
 import config
-# handcrafted特徴量のみを実行するバージョン
+# conventional特徴量のみを実行するバージョン
 #フィルタ・特徴量関数
 def butter_lowpass(cutoff, fs, order=4):
     nyq = 0.5 * fs

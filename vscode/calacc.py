@@ -1,4 +1,4 @@
-# 必要ライブラリ
+# 1個のファイルに対して、Visual3D再現の基本的な特徴量抽出のみを行う
 import numpy as np
 import pandas as pd
 import ezc3d
