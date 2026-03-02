@@ -1,4 +1,4 @@
-# 1個のファイルに対して、Visual3D再現の基本的な特徴量抽出のみを行う
+# 1個のファイルに対して、Conventional特徴量抽出を行う
 import numpy as np
 import pandas as pd
 import ezc3d
@@ -20,7 +20,6 @@ def lowpass_signal(x, cutoff, fs, order=4):
     return filtfilt(b, a, x, axis=0)
 
 def compute_acc_versions(pos, fs):
-    """6Hz位置フィルタ→20Hz加速度フィルタ（Visual3D再現）と生微分版を両方計算"""
     #pos_6hz: 6Hzローパスフィルタ後の位置データ
     pos_6Hz = lowpass_signal(pos, 6.0, fs)
     # 速度・加速度計算
@@ -66,7 +65,6 @@ c3d = ezc3d.c3d(file_path)
 
 # マーカー名に合わせて変更
 marker_name = "SACR"
-# find marker index
 marker_labels = c3d['parameters']['POINT']['LABELS']['value']
 idx = marker_labels.index(marker_name)
 

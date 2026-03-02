@@ -10,6 +10,7 @@ from tsfresh import extract_features
 from tsfresh.feature_extraction import EfficientFCParameters
 import config
 
+# 特徴量抽出関数を実行して、最初のファイルの加速度グラフとRHSイベントをプロットする
 def butter_lowpass(cutoff, fs, order=4):
     nyq = 0.5 * fs
     b, a = butter(order, cutoff/nyq, btype='low', analog=False)
