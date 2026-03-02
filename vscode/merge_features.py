@@ -3,6 +3,7 @@ import os
 import config
 
 # SACR, RANK, RANK2の特徴量ファイルと、関節角度・vGRFのQC後のファイル統合
+
 df_accel_sacr_path = config.df_accel_sacr_renamed
 df_accel_rank_path = config.df_accel_rank
 df_accel_rank2_path = config.df_accel_rank2
