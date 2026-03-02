@@ -2,19 +2,14 @@ import pandas as pd
 import os
 import config
 
-#関節角度の特徴量と加速度の特徴量を結合するスクリプト
-
-# ファイルパスの設定 
-#df_accel_sacr_path = config.df_accel_sacr
+# SACR, RANK, RANK2の特徴量ファイルと、関節角度・vGRFのQC後のファイル統合
 df_accel_sacr_path = config.df_accel_sacr_renamed
 df_accel_rank_path = config.df_accel_rank
 df_accel_rank2_path = config.df_accel_rank2
 df_knee_vgrf_QC_path = config.df_knee_vgrf_QC
-# 出力ファイルパスの設定 元のファイルと同じディレクトリ
 output_folder = os.path.dirname(df_accel_sacr_path)
 output_csv_path = os.path.join(output_folder, "merged_features_kinematics7.csv")
 
-#データの読み込み 
 try:
     df_accel_sacr = pd.read_csv(df_accel_sacr_path)
     df_accel_rank = pd.read_csv(df_accel_rank_path)
@@ -27,7 +22,7 @@ except FileNotFoundError as e:
     exit()
 
 
-# 関節角度，vGRFQC後のファイル用 キー列の作成/修正 
+# 関節角度，vGRFのQC後のファイル用 キー列の作成/修正 
 # Data 2の 'File' 列を、Data 1の 'file_name' と一致するように整形
 # '_markers.trc' を削除し、'.c3d' に置き換える
 df_kinema['file_name_key'] = (
