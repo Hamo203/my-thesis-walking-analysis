@@ -8,6 +8,7 @@ df_accel_sacr_path = config.df_accel__tsfresh_sacr
 exclude_cols = ['file_name', 'step_index', 'frames']
 df = pd.read_csv(df_accel_sacr_path)
 df = df.rename(
+    # 列名に "_マーカー名" を付ける 
     columns=lambda c: c if c in exclude_cols else f"{c}_sacr"
 )
 # 出力ファイルパスの設定 元のファイルと同じディレクトリ
