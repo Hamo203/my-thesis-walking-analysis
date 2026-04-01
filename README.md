@@ -7,30 +7,53 @@
 \vscode\machinelearning
 機械学習の段階で使ったコードです．実行環境はGoogle colab なので勝手が違うかもしれません．
 
+## 準備
+MATLAB/exportC3Dopensim.m
+c3d -> trc,motにエクスポートした
+
+MATLAB/exportC3Dopensim2.m
+フォルダに入ってるc3d全部 -> trc,motにエクスポートした
+
+
 ## 特徴量抽出
-\vscode\calcacc.py
-1個のファイルに対して、Conventional特徴量抽出を行う
+MATLAB/generate_vGRF.m
+.motからvGRFを取得
 
-\vscode\calcacc_conventional.py
-フォルダ内のファイルに対して、Conventional特徴量抽出を行う
+MATLAB/trc_mot_QC_kai_4.m
+①.trcファイルから得たマーカ座標から膝角度を算出
+②vGRFと膝角度についてQCをおこなう
 
-\vscode\calcacc_multidomain.py
-フォルダ内のファイルに対して、Multidomain特徴量抽出を行う
+vscode/calacc.py
+1個のc3dファイルに対して、Conventional特徴量抽出を行う
+
+vscode/calcacc_conventional.py
+フォルダ内のc3dファイルに対して、Conventional特徴量抽出を行う
+
+vscode/calcacc_multidomain.py
+フォルダ内のc3dファイルに対して、Multidomain特徴量抽出を行う
+
+
 
 ## 特徴量用ファイル作成
-\vscode\merge_features.py
+MATLAB/generate_marker.m
+マーカー抽出用 -> trcファイル中身確認
+
+vscode/merge_features.py
 SACR, RANK, RANK2の特徴量ファイルと、関節角度・vGRFのQC後のファイル統合を行う
 
-\vscode\rename_addsuffix.py
+vscode/rename_addsuffix.py
 加速度特徴量ファイルの列名に "_マーカー名" のサフィックスを付ける
 
 
 ## 確認
-\vscode\kakunin_tsfresh.py
+MATLAB/make_graph.m
+膝角度peek,ROM,vgrfの分布と分位数をプロットする
+
+vscode/kakunin_tsfresh.py
 特徴量抽出関数を実行して、最初のファイルの加速度グラフとRHSイベントをプロットする
 
-\vscode\to_compare_filter.py
+vscode/to_compare_filter.py
 20Hzローパスフィルタ前後の加速度の周波数スペクトルを比較するコード
 
-\vscode\usethis_kosuu.py
+vscode/usethis_kosuu.py
 use_thisになっている行数の確認
