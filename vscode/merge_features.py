@@ -2,8 +2,8 @@ import pandas as pd
 import os
 import config
 
-# SACR, RANK, RANK2の特徴量ファイルと、関節角度・vGRFのQC後のファイル統合
-
+# SACR, RANK, RANK2(入力特徴量が複数の場合)の特徴量ファイルと、関節角度・vGRFのQC後のファイル統合
+# 入力特徴量として使う部位が一つの場合は他の部位いらない
 df_accel_sacr_path = config.df_accel_sacr_renamed
 df_accel_rank_path = config.df_accel_rank
 df_accel_rank2_path = config.df_accel_rank2
@@ -31,7 +31,7 @@ df_kinema['file_name_key'] = (
     .str.replace('_markers.trc', '.c3d', regex=False)
 )
 
-# データの統合 
+""" 
 # SACR + RANK
 df_accel = pd.merge(
     df_accel_sacr,
@@ -48,8 +48,11 @@ df_accel = pd.merge(
     how='left'
 )
 
+"""
+# データの統合 
+
 df_merged = pd.merge(
-    df_accel,
+    df_accel_sacr,
     df_kinema.drop(columns=['File']), # 元の 'File' 列は削除
     left_on='file_name',
     right_on='file_name_key',
