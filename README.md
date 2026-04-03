@@ -4,7 +4,7 @@
 歩行データベース2019に関するものは.gitignoreになっています．
 
 # 作業ファイル
-\vscode\machinelearning
+vscode/machinelearning
 機械学習の段階で使ったコードです．実行環境はGoogle colab なので勝手が違うかもしれません．
 
 ## 準備
@@ -17,6 +17,9 @@ OpenSimの仕様に合わせて回転させようとしている
 1．X軸を中心にマイナス90度回転。
 2. 次に（回転後の）Y軸を中心にプラス90度回転。
 →（通常 Y が上、X が進行方向）に合わせようとした
+
+vscode/position_c3d.py
+マーカーの位置データを取得する例
 
 ## 特徴量抽出
 MATLAB/generate_vGRF.m
