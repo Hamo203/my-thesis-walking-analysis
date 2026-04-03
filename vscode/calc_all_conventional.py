@@ -90,7 +90,8 @@ def extract_basic_features(acc, ic_indices, fs, file_name, marker_name):
 
 
 folder = config.folder_calc_all
-output_csv = os.path.join(folder, "output_features_all_RAN2.csv")
+resultfolder = config.result_folder
+output_csv = os.path.join(resultfolder, "output_features_all_RHIP.csv")
 
 all_results = []
 
@@ -103,7 +104,7 @@ for file in os.listdir(folder):
 
     c3d = ezc3d.c3d(file_path)
 
-    marker_name = "RAN2"
+    marker_name = "RHIP"
     marker_labels = c3d['parameters']['POINT']['LABELS']['value']
     if marker_name not in marker_labels:
         print(f"{marker_name} not found in {file}")
