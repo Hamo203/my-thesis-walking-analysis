@@ -173,7 +173,7 @@ def extract_all_features(acc, ic_indices, fs, file_name ,marker_name):
 if __name__ == '__main__':
     
     folder = config.folder_calc_all_tsfresh
-    output_csv = os.path.join(folder, "output_features_tsfresh2_ran2.csv") # 出力ファイル名を変更
+    output_csv = os.path.join(folder, "output_features_tsfresh2_RTOE.csv") # 出力ファイル名を変更
 
     all_results = []
 
@@ -190,7 +190,7 @@ if __name__ == '__main__':
             print(f"[Error] Failed to read C3D file {file}: {e}")
             continue
 
-        marker_name = "RAN2"
+        marker_name = "RTOE"
         marker_labels = c3d['parameters']['POINT']['LABELS']['value']
         if marker_name not in marker_labels:
             print(f"{marker_name} not found in {file}")

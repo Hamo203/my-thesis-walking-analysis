@@ -2,19 +2,17 @@ import pandas as pd
 import os
 import config
 
-# SACR, RANK, RANK2(入力特徴量が複数の場合)の特徴量ファイルと、関節角度・vGRFのQC後のファイル統合
-# 入力特徴量として使う部位が一つの場合は他の部位いらない
-df_accel_sacr_path = config.df_accel_sacr_renamed
-df_accel_rank_path = config.df_accel_rank
-df_accel_rank2_path = config.df_accel_rank2
+# SACRの特徴量ファイルと、関節角度・vGRFのQC後のファイル統合
+#df_accel_sacr_path = config.df_accel_sacr_renamed
+df_accel_path= config.df_accel
 df_knee_vgrf_QC_path = config.df_knee_vgrf_QC
-output_folder = os.path.dirname(df_accel_sacr_path)
-output_csv_path = os.path.join(output_folder, "merged_features_kinematics7.csv")
+
+output_folder = config.result_folder
+#output_csv_path = os.path.join(output_folder, "merged_features_kinematics7.csv")
+output_csv_path = os.path.join(output_folder, "merged_features_tsfresh_RTOE.csv")
 
 try:
-    df_accel_sacr = pd.read_csv(df_accel_sacr_path)
-    df_accel_rank = pd.read_csv(df_accel_rank_path)
-    df_accel_rank2 = pd.read_csv(df_accel_rank2_path)
+    df_accel_sacr = pd.read_csv(df_accel_path)
     df_kinema = pd.read_csv(df_knee_vgrf_QC_path)
     print(" data loaded successfully.")
 except FileNotFoundError as e:
