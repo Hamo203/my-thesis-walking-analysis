@@ -91,7 +91,7 @@ def extract_basic_features(acc, ic_indices, fs, file_name, marker_name):
 
 folder = config.folder_calc_all
 resultfolder = config.result_folder
-output_csv = os.path.join(resultfolder, "output_features_all_RTOE.csv")
+output_csv = os.path.join(resultfolder, "output_features_conventional_RTOE.csv")
 
 all_results = []
 
